@@ -2,7 +2,7 @@
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
-             [hiccup.page :as page]
+            [hiccup.page :as page]
             [hiccup.form :as form]
             [ring.middleware.params :refer [wrap-params]]
             [ring.adapter.jetty :as jetty]
@@ -27,29 +27,42 @@
     (page/include-css "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css")
     (page/include-js  "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js")
     (page/include-css "/chatter.css")]
-   [:body
-    [:h1.text-primary "Our Chat App"]
+   [:body [:div.container.bg-danger
+    [:h1.text-primary "Lets Chat"]
     [:p
      (form/form-to
       [:post "/"]
-      [:span.text-danger "Name: "] (form/text-field "name")
-      [:span.text-danger "Message: "] (form/text-field "msg")
-      (form/submit-button "Submit"))]
+      [:div.form-group
+       [:span.text-danger [:strong "Name: "]]
+       (form/text-field {:class "form-control"} "name")]
+      [:div.form-group
+       [:span.text-primary [:strong "Favorite Color: "]]
+       (form/text-field {:class "form-control"} "color")]
+      [:div.form-group
+       [:span.text-danger [:strong "Favorite Animal: "]]
+       (form/text-field {:class "form-control"} "animal")]
+      [:div.form-group
+       [:span.text-primary [:strong "Message: "]]
+       (form/text-field {:class "form-control"} "msg")]
+      (form/submit-button
+       {:class "btn btn-info btn-lg"} "Submit"))]
     [:p
-     [:table#messages.table.table-bordered.table-striped
-      (map (fn [m] [:tr [:td (:name m)] [:td " - "] [:td (:message m)]]) messages)]]]))
+     [:table#messages.table.table-bordered.table-striped.
+      (map (fn [m] [:tr [:td (:name m)] [:td (:color m)] [:td (:animal m)] [:td (:message m)]]) messages)]]]]))
 
 (defn update-messages!
   "This will update a message list atom"
-  [messages name message]
-  (swap! messages conj  {:name name :message message}))
+  [messages name color animal message]
+  (swap! messages conj  {:name name :color color :animal animal :message message}))
 
 (defroutes app-routes
   (GET "/" [] (generate-message-view @chat-messages))
   (POST "/" {params :params}
         (let [name-param (get params "name")
+              color-param (get params "color")
+              animal-param (get params "animal")
               msg-param (get params "msg")
-              new-messages (update-messages! chat-messages name-param msg-param)]
+              new-messages (update-messages! chat-messages name-param color-param animal-param msg-param)]
         (generate-message-view new-messages)
           ))
   (route/resources "/")
