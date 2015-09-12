@@ -48,7 +48,7 @@
        {:class "btn btn-info btn-lg"} "Submit"))]
     [:p
      [:table#messages.table.table-bordered.table-striped.
-      (map (fn [m] [:tr [:td (:name m)] [:td (:color m)] [:td (:animal m)] [:td (:message m)]]) messages)]]]]))
+      (map (fn [m] [:tr {:style (str "color:"(:color m))} [:td (:name m)] [:td (:color m)] [:td (:animal m)] [:td (:message m)]]) messages)]]]]))
 
 (defn update-messages!
   "This will update a message list atom"
