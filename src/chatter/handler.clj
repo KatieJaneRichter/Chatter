@@ -28,12 +28,12 @@
     (page/include-js  "//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js")
     (page/include-css "/chatter.css")]
    [:body
-    [:h1 "Our Chat App"]
+    [:h1.text-primary "Our Chat App"]
     [:p
      (form/form-to
       [:post "/"]
-      "Name: " (form/text-field "name")
-      "Message: " (form/text-field "msg")
+      [:span.text-danger "Name: "] (form/text-field "name")
+      [:span.text-danger "Message: "] (form/text-field "msg")
       (form/submit-button "Submit"))]
     [:p
      [:table#messages.table.table-bordered.table-striped
